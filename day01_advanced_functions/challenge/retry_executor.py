@@ -20,8 +20,18 @@ def retry(
     - If func() raises an exception, only retry when should_retry(exception) is True.
     - If retries are exhausted or should_retry returns False, re-raise the last exception.
     """
-    # TODO: implement
-    raise NotImplementedError
+    def _retry(attempts_remaining: int) -> object:
+        try:
+            return func()
+        except Exception as e:
+            if attempts_remaining <= 1 or not should_retry(e):
+                raise
+            return _retry(attempts_remaining - 1)
+    return _retry(attempts)
+  
+
+    # # TODO: implement
+    # raise NotImplementedError
 
 
 if __name__ == "__main__":
@@ -30,17 +40,20 @@ if __name__ == "__main__":
     #
     # Example skeleton:
     #
-    # def make_flaky_operation():
-    #     call_count = 0
-    #     def operation():
-    #         nonlocal call_count
-    #         call_count += 1
-    #         if call_count < 3:
-    #             raise ConnectionError(f"attempt {call_count} failed")
-    #         return "success"
-    #     return operation
-    #
-    # flaky = make_flaky_operation()
-    # result = retry(flaky, attempts=5, should_retry=lambda e: isinstance(e, ConnectionError))
-    # print(result)
-    pass
+    def make_flaky_operation():
+        call_count = 0
+        def operation():
+            nonlocal call_count
+            call_count += 1
+            if call_count < 3:
+                raise ConnectionError(f"attempt {call_count} failed")
+            return "success"
+        return operation
+    
+    flaky = make_flaky_operation()
+    try:
+        result = retry(flaky, attempts=3, should_retry=lambda e: isinstance(e, ConnectionError))
+        print(result)
+    except Exception as e:
+        print(f"Operation failed after retries: {e}")
+    # pass
