@@ -22,8 +22,8 @@ Future daily runs should follow this structure rather than a single flat .md fil
 Items marked **NEW** were added to fill gaps in the original list — each is inserted where it logically builds on the topic before it.
 
 1. Advanced Functions (first-class functions, higher-order functions) — **DONE (2026-08-12)**
-2. Closures
-3. Decorators
+2. Closures — **DONE (2026-08-13)**
+3. Decorators — **DONE (2026-08-13)**
 4. Functional Programming Toolkit (`functools.partial`/`reduce`/`singledispatch`, `itertools`, `operator`) — **NEW**, extends Day 1's higher-order functions into the stdlib's functional tools
 5. Iterators and Generators
 6. Advanced Generator Patterns (`yield from`, `send`/`throw`/`close`, generator-based coroutines) — **NEW**, deepens generators before context managers/asyncio need them
@@ -74,7 +74,9 @@ Items marked **NEW** were added to fill gaps in the original list — each is in
 | Day | Date | Topic | Folder |
 |---|---|---|---|
 | 1 | 2026-08-12 | Advanced Functions (first-class & higher-order functions) | day01_advanced_functions/day01_advanced_functions.md |
+| 2 | 2026-08-13 | Closures (free variables, cells, `nonlocal`, closure factories) | day02_closures/day02_closures.md |
+| 3 | 2026-08-13 | Decorators (`@` sugar, `functools.wraps`, decorator factories, stacking order) | day03_decorators/day03_decorators.md |
 
 ## Next Scheduled Topic
 
-**Day 2: Closures** — builds directly on Day 1 (functions as returned objects); explain how inner functions retain access to enclosing-scope variables, `nonlocal`, and how this sets up decorators for Day 3.
+**Day 4: Functional Programming Toolkit** — `functools.partial`, `functools.reduce`, `functools.singledispatch`, `itertools`, and the `operator` module. Extends Day 1's higher-order functions into the standard library's dedicated functional-programming tools; a natural next step now that closures (Day 2) and decorators (Day 3) have shown how far plain functions can be pushed before reaching for these stdlib helpers.
