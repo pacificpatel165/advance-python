@@ -6,7 +6,7 @@ Each part builds on Days 1-2 (higher-order functions, closures) plus today's
 decorator patterns.
 """
 from __future__ import annotations
-from functools import wraps
+from functools import cache, wraps
 from typing import Callable, TypeVar
 import inspect
 
@@ -21,7 +21,11 @@ F = TypeVar("F", bound=Callable[..., object])
 
 def log_arguments(func: F) -> F:
     """TODO: implement."""
-    raise NotImplementedError
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        print(f"calling {func.__name__} with args={args}, kwargs={kwargs}")
+        return func(*args, **kwargs)
+    return wrapper
 
 
 # --- Part B (intermediate) --------------------------------------------------
@@ -36,7 +40,20 @@ def log_arguments(func: F) -> F:
 
 def validate_positive(*param_names: str) -> Callable[[F], F]:
     """TODO: implement."""
-    raise NotImplementedError
+    def decorator(func: F) -> F:
+        sig = inspect.signature(func)
+
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            bound_args = sig.bind(*args, **kwargs)
+            for name in param_names:
+                if name in bound_args.arguments:
+                    value = bound_args.arguments[name]
+                    if value <= 0:
+                        raise ValueError(f"Parameter '{name}' must be positive, got {value}")
+            return func(*args, **kwargs)
+        return wrapper  # type: ignore[return-value]
+    return decorator
 
 
 # --- Part C (project-style) --------------------------------------------------
@@ -48,40 +65,68 @@ def validate_positive(*param_names: str) -> Callable[[F], F]:
 
 def cache_with_ttl(seconds: float, clock: Callable[[], float]) -> Callable[[F], F]:
     """TODO: implement."""
-    raise NotImplementedError
+    def decorator(func: F) -> F:
+        cache = {}
+
+        @wraps(func)
+        def wrapper(argument):
+            if argument in cache:
+                value, stored_at = cache[argument]
+                age = clock() - stored_at
+                if age < seconds:
+                    return value
+
+            # Cache miss or expired
+            value = func(argument)
+            cache[argument] = (value, clock())
+            return value
+        return wrapper  # type: ignore[return-value]
+    return decorator
+    
 
 
 if __name__ == "__main__":
     # --- quick manual checks; replace/extend as you implement each part ---
 
     # Part A
-    # @log_arguments
-    # def add(a, b): return a + b
-    # add(2, 3)
+    @log_arguments
+    def add(a, b, c=15):
+        return a + b + c
+    add(2, 3, c=4)
 
     # Part B
-    # @validate_positive("amount", "tax")
-    # def charge_card(amount: float, tax: float) -> float:
-    #     return amount + tax
-    # charge_card(10, 2)
-    # charge_card(-5, 2)  # should raise ValueError
+    @validate_positive("amount", "tax")
+    def charge_card(amount: float, tax: float) -> float:
+        return amount + tax
+    try:
+        print("total charge_card(10, 2):", charge_card(10, 2))
+    except ValueError as e:
+        print(f"Error: {e}")
+    try:
+        print("total charge_card(-5, 2):", charge_card(-5, 2))  # should raise ValueError
+    except ValueError as e:
+        print(f"Error: {e}")   
+
 
     # Part C
-    # def make_fake_clock():
-    #     t = [0.0]
-    #     def advance(seconds): t[0] += seconds
-    #     def clock(): return t[0]
-    #     return advance, clock
-    #
-    # advance, clock = make_fake_clock()
-    # calls = []
-    # @cache_with_ttl(seconds=10, clock=clock)
-    # def expensive(n):
-    #     calls.append(n)
-    #     return n * n
-    # expensive(5); expensive(5)   # second call should be a cache hit
-    # advance(11)
-    # expensive(5)                 # should recompute after TTL expiry
-    # print(calls)  # expect two entries: [5, 5]
+    def make_fake_clock():
+        t = [0.0]
+        def advance(seconds): 
+            t[0] += seconds
+        def clock():
+            return t[0]
+        return advance, clock
+    
+    advance, clock = make_fake_clock()
+    calls = []
+    @cache_with_ttl(seconds=10, clock=clock)
+    def expensive(n):
+        calls.append(n)
+        return n * n
+    expensive(5)
+    expensive(5)    # second call should be a cache hit
+    advance(11)
+    expensive(5)    # should recompute after TTL expiry
+    print(calls)    # expect two entries: [5, 5]
 
-    pass
+
