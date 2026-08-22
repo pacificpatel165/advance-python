@@ -24,7 +24,7 @@ Items marked **NEW** were added to fill gaps in the original list — each is in
 1. Advanced Functions (first-class functions, higher-order functions) — **DONE (2026-08-12)**
 2. Closures — **DONE (2026-08-13)**
 3. Decorators — **DONE (2026-08-13)**
-4. Functional Programming Toolkit (`functools.partial`/`reduce`/`singledispatch`, `itertools`, `operator`) — **NEW**, extends Day 1's higher-order functions into the stdlib's functional tools
+4. Functional Programming Toolkit (`functools.partial`/`reduce`/`singledispatch`, `itertools`, `operator`) — **NEW**, extends Day 1's higher-order functions into the stdlib's functional tools — **DONE (2026-08-22)**
 5. Iterators and Generators
 6. Advanced Generator Patterns (`yield from`, `send`/`throw`/`close`, generator-based coroutines) — **NEW**, deepens generators before context managers/asyncio need them
 7. Context Managers
@@ -76,7 +76,8 @@ Items marked **NEW** were added to fill gaps in the original list — each is in
 | 1 | 2026-08-12 | Advanced Functions (first-class & higher-order functions) | day01_advanced_functions/day01_advanced_functions.md |
 | 2 | 2026-08-13 | Closures (free variables, cells, `nonlocal`, closure factories) | day02_closures/day02_closures.md |
 | 3 | 2026-08-13 | Decorators (`@` sugar, `functools.wraps`, decorator factories, stacking order) | day03_decorators/day03_decorators.md |
+| 4 | 2026-08-22 | Functional Programming Toolkit (`functools.partial`/`reduce`/`singledispatch`, `itertools`, `operator`) | day04_functional_toolkit/day04_functional_toolkit.md |
 
 ## Next Scheduled Topic
 
-**Day 4: Functional Programming Toolkit** — `functools.partial`, `functools.reduce`, `functools.singledispatch`, `itertools`, and the `operator` module. Extends Day 1's higher-order functions into the standard library's dedicated functional-programming tools; a natural next step now that closures (Day 2) and decorators (Day 3) have shown how far plain functions can be pushed before reaching for these stdlib helpers.
+**Day 5: Iterators and Generators** — the iterator protocol (`__iter__`/`__next__`), generator functions and `yield`, and how they differ from eagerly building lists. Builds directly on Day 4's `itertools`, which only makes sense once the iterator protocol underneath it is understood; also sets up Day 6 (Advanced Generator Patterns) and Day 7 (Context Managers, which reuses generator machinery via `contextlib`).
